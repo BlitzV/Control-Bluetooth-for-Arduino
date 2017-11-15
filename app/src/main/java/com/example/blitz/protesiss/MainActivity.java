@@ -2,19 +2,23 @@ package com.example.blitz.protesiss;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 import static android.R.color.darker_gray;
 import static android.R.color.holo_blue_light;
@@ -27,7 +31,7 @@ public class MainActivity extends Activity {
     private BluetoothSocket btSocket;
     private BluetoothAdapter bAdapter;
 
-    private ConnectedThread mConnectedThread;
+    //private ConnectedThread mConnectedThread;
 
     private Button an;
     private Button bn;
@@ -45,6 +49,9 @@ public class MainActivity extends Activity {
     private Button on;
     private Button un;
     private FloatingActionButton fab;
+    // SPP UUID service - this should work for most devices
+    private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static String address;
 
     private void configurarAdaptadorBluetooth() {
         bAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -136,15 +143,14 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 Intent fab = new Intent(MainActivity.this, DeviceListActivity.class);
                 startActivity(fab);
-                if (bAdapter.isEnabled())
-                    bAdapter.disable();
+                if (bAdapter.isEnabled());
+                    //bAdapter.disable();
                 else {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
                 }
             }
         });
-
         // EN EL ONCREATE TAMBIEN VAS A DECLARAR LOS LISTENER
         // AJURO, SI NO, VAS A MALGASTAR MEMORIA.
         an.setOnClickListener(new View.OnClickListener() {
@@ -252,9 +258,11 @@ public class MainActivity extends Activity {
                 Toast.makeText(getBaseContext(),"servo 6.TurnRight.Muñeca",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
 
-//        mConnectedThread = new ConnectedThread(btSocket);
-//        mConnectedThread.start();
+        return  device.createRfcommSocketToServiceRecord(BTMODULEUUID);
+        //creates secure outgoing connecetion with BT device using UUID
     }
 
     @Override
@@ -273,62 +281,61 @@ public class MainActivity extends Activity {
         }
     }
 
-        // metodo onDestroy para eliminar el registro de eventos capturados
+    // metodo onDestroy para eliminar el registro de eventos capturados
     @Override
     public void onDestroy() {
         super.onDestroy();
-        this.unregisterReceiver(bReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(bReceiver);
     }
 
     //clase para indicar el thread que se ejecutara en segundo plano
-    private class ConnectedThread extends Thread {
+    /*private class ConnectedThread extends Thread {
+        private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
-        // ESTO TE VA A LEVANTAR UN NullPointerException
-        // PORQUE, TU OBJETO BluetoothSocket NO HA SIDO INSTANCIADO,
-        // POR LO TANTO ES NULL.
-        ConnectedThread(BluetoothSocket socket) {
+        //creation of the connect thread
+        public ConnectedThread(BluetoothSocket socket) {
+            InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
-            // Get the input and output streams, using temp objects because
             try {
+                //Create I/O streams for connection
+                tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
+            } catch (IOException e) { }
 
-
-                // AQUI SE ESTA AGARRANDO EL ERROR DE NullPointerException
-                // Y IOException.
-                //
-                //
-                // APRENDE DE LOS ERRORES DE JAVA.
-                //
-                // NullPointerException: Es llamado cuando un objeto de java es nulo
-                // y para evadir ese error, tienes que tener una condicional o un
-                // try catch
-                //
-                // IOException: Es llamado cuando no se puede escribir a un stream
-                // o cuando no puedes leer del mismo, entre otros.
-                //
-            } catch (IOException | NullPointerException ignored) {
-                Log.d(TAG, ignored.toString());
-            }
-
+            mmInStream = tmpIn;
             mmOutStream = tmpOut;
         }
 
-        /* Call this from the main activity to send data to the remote device */
-        void write(String Imput) {
-            byte[] buffer = Imput.getBytes();
-            try {
-                mmOutStream.write(buffer);
-            } catch (IOException ignored) {}
-        }
 
-        // PARA QUE TU CODIGO DE HILO CORRA EN BACKGROUND,
-        // TIENES QUE IMPLEMENTAR EL METODO RUN.
-        @Override
         public void run() {
-            super.run();
+            byte[] buffer = new byte[256];
+            int bytes;
 
+            // Keep looping to listen for received messages
+            while (true) {
+                try {
+                    bytes = mmInStream.read(buffer);         //read bytes from input buffer
+                    String readMessage = new String(buffer, 0, bytes);
+                    // Send the obtained bytes to the UI Activity via handler
+                   // bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                } catch (IOException e) {
+                    break;
+                }
+            }
         }
-    }
+        //write method
+        public void write(String input) {
+            byte[] msgBuffer = input.getBytes();           //converts entered String into bytes
+            try {
+                mmOutStream.write(msgBuffer);                //write bytes over BT connection via outstream
+            } catch (IOException e) {
+                //if you cannot write, close the application
+                Toast.makeText(getBaseContext(), "La Conexión fallo", Toast.LENGTH_LONG).show();
+                finish();
+
+            }
+        }
+    }*/
 }

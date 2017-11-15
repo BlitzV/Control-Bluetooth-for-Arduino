@@ -47,7 +47,11 @@ public class DeviceListActivity extends Activity {
         textView1.setText(" ");
 
         // Initialize array adapter for paired devices
-        ArrayAdapter<String> mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_name);
+
+        ArrayAdapter<String> mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_list,R.id.title_paired_devices);
+        //**EL DEVICE NAME NO LO ESTOY USANDO EN NINGUN MOMENTO, LA COSA ES QUE DONDE LO COLOQUE ME CIERRA LA APP
+        // YA LE RESOLVI TODOS LOS ERRORES QUE TENIA PERO NO ME MUESTRA LOS DISPOSITIVOS DISPONIBLES
+        // NISIQUIERA LOS QUE YA TENGO VINCULADOS AL CELULAR...
 
         // Find and set up the ListView for paired devices
         ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
@@ -76,9 +80,9 @@ public class DeviceListActivity extends Activity {
     private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
 
-            textView1.setText("");
+            textView1.setText("Conectando...");
             // Get the device MAC address, which is the last 17 chars in the View
-            String info = ((TextView) v).getText().toString();
+            String info = ((TextView) v.findViewById(R.id.title_paired_devices)).getText().toString();
             String address = info.substring(info.length() - 17);
 
             // Make an intent to start next activity while taking an extra which is the MAC address.
