@@ -34,13 +34,18 @@ public class DeviceListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_list);
+        
+        // Get the local Bluetooth adapter
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+        
+        //
+        checkBTState();
     }
 
+    // recuerda, en onResume solo vas a declarar objetos de la vista.
     @Override
     public void onResume() {
         super.onResume();
-        //***************
-        checkBTState();
 
         textView1 = (TextView) findViewById(R.id.connecting);
         textView1.setTextSize(40);
@@ -58,8 +63,6 @@ public class DeviceListActivity extends Activity {
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
         pairedListView.setOnItemClickListener(mDeviceClickListener);
 
-        // Get the local Bluetooth adapter
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // Get a set of currently paired devices and append to 'pairedDevices'
         Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
@@ -94,7 +97,6 @@ public class DeviceListActivity extends Activity {
 
     private void checkBTState() {
         // Check device has Bluetooth and that it is turned on
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter(); // CHECK THIS OUT THAT IT WORKS!!!
         if(mBtAdapter == null) {
             Toast.makeText(getBaseContext(), "El dispositivo no soporta Bluetooth", Toast.LENGTH_SHORT).show();
         } else {
@@ -107,4 +109,20 @@ public class DeviceListActivity extends Activity {
             }
         }
     }
+    
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        switch (requestCode){
+            case REQUEST_ENABLE_BLUETOOTH:{
+                if (resultCode == RESULT_OK){
+                    //acciones que se realizaran si el bluetooth se activa
+                } else{
+                    Toast.makeText(MainActivity.this,"No se pudo encender el bluetooth", Toast.LENGTH_LONG).show();//acciones que se realizaran si el bluetooth no se activa
+                    //acciones que se realizaran si el bluetooth no se activa
+                }
+            }
+            default:
+                break;
+    }
+// }
 }
