@@ -143,14 +143,21 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 Intent fab = new Intent(MainActivity.this, DeviceListActivity.class);
                 startActivity(fab);
-                if (bAdapter.isEnabled());
+                
+                // intenta encender el bluetooth en la actividad
+                // para buscar dispositivos.
+                //
+                // Quitale peso a esta actividad.
+                // 
+                //if (bAdapter.isEnabled());
                     //bAdapter.disable();
-                else {
-                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
-                }
+                //else {
+                //    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                //    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
+                // }
             }
         });
+        
         // EN EL ONCREATE TAMBIEN VAS A DECLARAR LOS LISTENER
         // AJURO, SI NO, VAS A MALGASTAR MEMORIA.
         an.setOnClickListener(new View.OnClickListener() {
@@ -265,21 +272,21 @@ public class MainActivity extends Activity {
         //creates secure outgoing connecetion with BT device using UUID
     }
 
-    @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data){
-        switch (requestCode){
-            case REQUEST_ENABLE_BLUETOOTH:{
-                if (resultCode == RESULT_OK){
-                    //acciones que se realizaran si el bluetooth se activa
-                } else{
-                    Toast.makeText(MainActivity.this,"Conexion fallida, intente nuevamente", Toast.LENGTH_LONG).show();//acciones que se realizaran si el bluetooth no se activa
-                    //acciones que se realizaran si el bluetooth no se activa
-                }
-            }
-            default:
-                break;
-        }
-    }
+    //@Override
+    //protected void onActivityResult(int requestCode,int resultCode,Intent data){
+    //    switch (requestCode){
+    //        case REQUEST_ENABLE_BLUETOOTH:{
+    //            if (resultCode == RESULT_OK){
+    //                //acciones que se realizaran si el bluetooth se activa
+    //            } else{
+    //                Toast.makeText(MainActivity.this,"Conexion fallida, intente nuevamente", Toast.LENGTH_LONG).show();//acciones que se realizaran si el bluetooth no se activa
+    //                //acciones que se realizaran si el bluetooth no se activa
+    //            }
+    //        }
+    //        default:
+    //            break;
+    //    }
+    // }
 
     // metodo onDestroy para eliminar el registro de eventos capturados
     @Override
