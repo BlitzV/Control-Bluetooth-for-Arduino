@@ -26,6 +26,7 @@ public class DeviceListActivity extends Activity {
 
     // EXTRA string to send on to mainactivity
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
+    private static final int REQUEST_ENABLE_BLUETOOTH = 1 ;
 
     // Member fields
     private BluetoothAdapter mBtAdapter;
@@ -54,15 +55,20 @@ public class DeviceListActivity extends Activity {
         // Initialize array adapter for paired devices
 
         ArrayAdapter<String> mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_list,R.id.title_paired_devices);
-        //**EL DEVICE NAME NO LO ESTOY USANDO EN NINGUN MOMENTO, LA COSA ES QUE DONDE LO COLOQUE ME CIERRA LA APP
-        // YA LE RESOLVI TODOS LOS ERRORES QUE TENIA PERO NO ME MUESTRA LOS DISPOSITIVOS DISPONIBLES
-        // NISIQUIERA LOS QUE YA TENGO VINCULADOS AL CELULAR...
+
+        //  AQUI INICIALIZANDO EL ARREGLO HAY PAGINAS QUE LLAMAN EL LAYOUT DEVICE_NAME PERO CUANDO LO PONGO ME DA ERROR
+        // PERO CUANDO PONGO EL LAYOUT DEVICCE_LIST CON EL ID TITLE_PAIRED DEVICE SE QUITA EL ERROR
+        //LA COSA ES QUE NO BUSCA DISPOSITIVOS NUEVOS
+        //NO MUESTRA LOS QUE ESTAN VINCULADOS EN EL CELULAR NORMALMENTE
+        // ENTONCES NECESITO ESO PUES PARA HACER EL HILO QUE YA TENGO VARIOS CODIGOS PARA PROBAR
 
         // Find and set up the ListView for paired devices
         ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
         pairedListView.setOnItemClickListener(mDeviceClickListener);
 
+        // Get the local Bluetooth adapter
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // Get a set of currently paired devices and append to 'pairedDevices'
         Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
@@ -117,12 +123,12 @@ public class DeviceListActivity extends Activity {
                 if (resultCode == RESULT_OK){
                     //acciones que se realizaran si el bluetooth se activa
                 } else{
-                    Toast.makeText(MainActivity.this,"No se pudo encender el bluetooth", Toast.LENGTH_LONG).show();//acciones que se realizaran si el bluetooth no se activa
+                    Toast.makeText(DeviceListActivity.this,"No se pudo encender el bluetooth", Toast.LENGTH_LONG).show();//acciones que se realizaran si el bluetooth no se activa
                     //acciones que se realizaran si el bluetooth no se activa
                 }
             }
             default:
                 break;
     }
-// }
+}
 }

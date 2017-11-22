@@ -27,11 +27,10 @@ import static android.R.color.holo_blue_light;
 public class MainActivity extends Activity {
 
     private String TAG = "MAINACTIVITY";
-    private static final int REQUEST_ENABLE_BLUETOOTH = 1 ;
     private BluetoothSocket btSocket;
     private BluetoothAdapter bAdapter;
 
-    //private ConnectedThread mConnectedThread;
+    private ConnectedThread mConnectedThread;
 
     private Button an;
     private Button bn;
@@ -135,6 +134,7 @@ public class MainActivity extends Activity {
         on = (Button) findViewById(R.id.button14);
         un = (Button) findViewById(R.id.button15);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+
 
         configurarAdaptadorBluetooth();
 
@@ -271,22 +271,37 @@ public class MainActivity extends Activity {
         return  device.createRfcommSocketToServiceRecord(BTMODULEUUID);
         //creates secure outgoing connecetion with BT device using UUID
     }
+    @Override
+    public void onResume() {
+        super.onResume();
 
-    //@Override
-    //protected void onActivityResult(int requestCode,int resultCode,Intent data){
-    //    switch (requestCode){
-    //        case REQUEST_ENABLE_BLUETOOTH:{
-    //            if (resultCode == RESULT_OK){
-    //                //acciones que se realizaran si el bluetooth se activa
-    //            } else{
-    //                Toast.makeText(MainActivity.this,"Conexion fallida, intente nuevamente", Toast.LENGTH_LONG).show();//acciones que se realizaran si el bluetooth no se activa
-    //                //acciones que se realizaran si el bluetooth no se activa
-    //            }
-    //        }
-    //        default:
-    //            break;
-    //    }
-    // }
+        Intent intent = getIntent();
+        address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+
+        if(address != null){
+            BluetoothDevice device = bAdapter.getRemoteDevice(address);
+
+            try {
+                btSocket = createBluetoothSocket(device);
+            } catch (IOException e) {
+                Toast.makeText(getBaseContext(), "Socket creation failed", Toast.LENGTH_LONG).show();
+            }
+            try
+            {
+                btSocket.connect();
+            } catch (IOException e) {
+                try
+                {
+                    btSocket.close();
+                } catch (IOException e2)
+                {
+                }
+            }
+            mConnectedThread = new ConnectedThread(btSocket);
+            mConnectedThread.start();
+            mConnectedThread.write("x");
+        }
+    }
 
     // metodo onDestroy para eliminar el registro de eventos capturados
     @Override
@@ -296,12 +311,12 @@ public class MainActivity extends Activity {
     }
 
     //clase para indicar el thread que se ejecutara en segundo plano
-    /*private class ConnectedThread extends Thread {
+    private class ConnectedThread extends Thread {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
         //creation of the connect thread
-        public ConnectedThread(BluetoothSocket socket) {
+        ConnectedThread(BluetoothSocket socket) {
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
@@ -344,5 +359,5 @@ public class MainActivity extends Activity {
 
             }
         }
-    }*/
+    }
 }
