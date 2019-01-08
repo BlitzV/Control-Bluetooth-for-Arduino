@@ -56,12 +56,6 @@ public class DeviceListActivity extends Activity {
 
         ArrayAdapter<String> mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_list,R.id.title_paired_devices);
 
-        //  AQUI INICIALIZANDO EL ARREGLO HAY PAGINAS QUE LLAMAN EL LAYOUT DEVICE_NAME PERO CUANDO LO PONGO ME DA ERROR
-        // PERO CUANDO PONGO EL LAYOUT DEVICCE_LIST CON EL ID TITLE_PAIRED DEVICE SE QUITA EL ERROR
-        //LA COSA ES QUE NO BUSCA DISPOSITIVOS NUEVOS
-        //NO MUESTRA LOS QUE ESTAN VINCULADOS EN EL CELULAR NORMALMENTE
-        // ENTONCES NECESITO ESO PUES PARA HACER EL HILO QUE YA TENGO VARIOS CODIGOS PARA PROBAR
-
         // Find and set up the ListView for paired devices
         ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
