@@ -90,28 +90,6 @@ public class MainActivity extends Activity {
         }
     };
 
-
-    // AQUI VAS A OBTENER TODAS LAS VIEWS DE UNA VIEWGROUP
-    //
-    // View: Botones, Textos, Entradas de Text, listas, etc
-    // ViewGroup: Relative Layout, Linear layout, ConstraintLayout.
-    //
-    // ejemplo:
-    //
-    //  <RelativeLayout>  <- ViewGroup
-    //      <LinearLayout> <- ViewGroup
-    //          <TextView></TextView> <- View
-    //      </LinearLayout>
-    //  </RelativeLayout>
-    //
-    // TAMBIEN AQUI VAS A INSTANCIAR TODOS LOS OBJETOS,
-    // YA QUE, CUANDO SE LLAMA EL METODO ONCREATE,
-    // TU APLICACION SE COLOCA EN MEMORIA, SI LO HACES
-    // ANTES, TE VA A LANZAR UN ERROR.
-    //
-    // Como por ejemplo: Crear conexiones con una base de datos,
-    // Instanciar tus Fragmentos, entre otros.
-    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,18 +121,6 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 Intent fab = new Intent(MainActivity.this, DeviceListActivity.class);
                 startActivity(fab);
-                
-                // intenta encender el bluetooth en la actividad
-                // para buscar dispositivos.
-                //
-                // Quitale peso a esta actividad.
-                // 
-                //if (bAdapter.isEnabled());
-                    //bAdapter.disable();
-                //else {
-                //    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                //    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
-                // }
             }
         });
         
